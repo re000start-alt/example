@@ -1,0 +1,4 @@
+project_id = "jzlxxcfttbkhyarzsotr"
+
+[functions.ai-compose]
+verify_jwt = false

@@ -1,0 +1,91 @@
+.project-view-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.project-card {
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.project-header-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.project-header {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  transition: background var(--transition-normal);
+  text-align: left;
+}
+
+.project-header:hover {
+  background: rgba(var(--color-secondary), 0.5);
+}
+
+.project-delete-btn {
+  padding: var(--spacing-sm);
+  margin-right: var(--spacing-md);
+  background: transparent;
+  border: none;
+  color: var(--color-muted-foreground);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.project-delete-btn:hover {
+  background: var(--color-destructive);
+  color: white;
+}
+
+.project-chevron {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: var(--color-foreground);
+}
+
+.project-color {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.project-name {
+  font-weight: 600;
+  color: var(--color-foreground);
+}
+
+.project-count {
+  font-size: 0.875rem;
+  color: var(--color-muted-foreground);
+}
+
+.project-tasks {
+  padding: var(--spacing-md);
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.project-empty {
+  text-align: center;
+  color: var(--color-muted-foreground);
+  padding: var(--spacing-xl) var(--spacing-md);
+}

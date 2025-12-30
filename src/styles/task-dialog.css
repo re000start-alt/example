@@ -1,0 +1,384 @@
+.task-dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.task-dialog-title-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.task-dialog-title-icon {
+  color: var(--color-muted-foreground);
+  font-size: 1.25rem;
+}
+
+.task-dialog-title-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 1.25rem;
+  font-weight: 500;
+  padding: 0;
+  color: var(--color-foreground);
+}
+
+.task-dialog-title-input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.task-dialog-properties {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.task-dialog-property-row {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  padding: var(--spacing-xs) 0;
+}
+
+.task-dialog-property-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 140px;
+  color: var(--color-muted-foreground);
+  font-size: 0.875rem;
+}
+
+.task-dialog-property-value {
+  flex: 1;
+}
+
+.task-dialog-status-trigger {
+  border: none;
+  background: transparent;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  height: auto;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  width: auto;
+}
+
+.task-dialog-status-trigger.status-todo {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.task-dialog-status-trigger.status-inprogress {
+  background: hsl(217 91% 60%);
+  color: white;
+}
+
+.task-dialog-status-trigger.status-completed {
+  background: hsl(142 71% 45%);
+  color: white;
+}
+
+.task-dialog-status-trigger.status-cancelled {
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+}
+
+.task-dialog-select-trigger {
+  border: none;
+  background: transparent;
+  padding: 0;
+  height: auto;
+  font-size: 0.875rem;
+  color: var(--color-muted-foreground);
+  width: auto;
+}
+
+.task-dialog-select-trigger:hover {
+  color: var(--color-foreground);
+}
+
+.task-dialog-date-value {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.task-dialog-date-input {
+  border: none;
+  background: transparent;
+  padding: 0;
+  height: auto;
+  font-size: 0.875rem;
+  color: var(--color-muted-foreground);
+  width: auto;
+}
+
+.task-dialog-date-input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.task-dialog-date-shortcut {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: hsl(142 71% 45%);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background var(--transition-normal);
+}
+
+.task-dialog-date-shortcut:hover {
+  background: var(--color-secondary);
+}
+
+.task-dialog-time-input {
+  border: none;
+  background: transparent;
+  padding: 0;
+  height: auto;
+  font-size: 0.875rem;
+  color: var(--color-muted-foreground);
+  width: auto;
+}
+
+.task-dialog-time-input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.task-dialog-reminder-value {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.task-dialog-clear-btn {
+  color: var(--color-muted-foreground);
+  cursor: pointer;
+  transition: color var(--transition-normal);
+}
+
+.task-dialog-clear-btn:hover {
+  color: var(--color-destructive);
+}
+
+.task-dialog-project-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+}
+
+.task-dialog-description {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.task-dialog-description-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-secondary);
+}
+
+.task-dialog-toolbar-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  color: var(--color-muted-foreground);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  background: transparent;
+  border: none;
+}
+
+.task-dialog-toolbar-btn:hover {
+  color: var(--color-foreground);
+  background: var(--color-card);
+}
+
+.task-dialog-toolbar-btn.active {
+  color: hsl(var(--primary));
+}
+
+.task-dialog-toolbar-divider {
+  color: var(--color-border);
+}
+
+.task-dialog-editor-container {
+  min-height: 200px;
+}
+
+.task-dialog-attachment-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-secondary);
+}
+
+.task-dialog-attach-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  color: var(--color-muted-foreground);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  background: transparent;
+  border: none;
+}
+
+.task-dialog-attach-btn:hover {
+  color: var(--color-foreground);
+  background: var(--color-card);
+}
+
+.task-dialog-attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.task-dialog-attachment {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-secondary);
+  border-radius: var(--radius-md);
+}
+
+.task-dialog-attachment-preview {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+.task-dialog-attachment-name {
+  font-size: 0.875rem;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.task-dialog-attachment-remove {
+  color: var(--color-muted-foreground);
+  cursor: pointer;
+  transition: color var(--transition-normal);
+}
+
+.task-dialog-attachment-remove:hover {
+  color: var(--color-destructive);
+}
+
+.task-dialog-footer {
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+}
+
+/* Mobile and Tablet Responsive Styles */
+@media (max-width: 768px) {
+  .task-dialog-form {
+    gap: var(--spacing-sm);
+  }
+
+  .task-dialog-title-input {
+    font-size: 1rem;
+  }
+
+  .task-dialog-property-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) 0;
+  }
+
+  .task-dialog-property-label {
+    width: 100%;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .task-dialog-property-value {
+    width: 100%;
+  }
+
+  .task-dialog-date-value {
+    flex-wrap: wrap;
+  }
+
+  .task-dialog-date-input,
+  .task-dialog-time-input {
+    width: 100%;
+  }
+
+  .task-dialog-select-trigger,
+  .task-dialog-status-trigger {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .task-dialog-editor-container {
+    min-height: 150px;
+  }
+
+  .task-dialog-attachments {
+    flex-direction: column;
+  }
+
+  .task-dialog-attachment {
+    width: 100%;
+  }
+
+  .task-dialog-attachment-name {
+    max-width: 200px;
+  }
+
+  .task-dialog-footer {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .task-dialog-footer button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .task-dialog-title-container {
+    padding-bottom: var(--spacing-sm);
+  }
+
+  .task-dialog-description-toolbar {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
+
+  .task-dialog-toolbar-btn {
+    padding: var(--spacing-xs);
+    font-size: 0.75rem;
+  }
+}

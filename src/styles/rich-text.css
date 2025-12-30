@@ -1,0 +1,115 @@
+.rich-text-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.rich-text-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rich-text-print-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-foreground);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition-normal);
+}
+
+.rich-text-print-button:hover {
+  background: var(--color-secondary);
+}
+
+.rich-text-editor {
+  background: var(--color-card);
+  border-radius: var(--radius-md);
+}
+
+.rich-text-editor .quill {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.rich-text-editor .ql-toolbar {
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-secondary);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.rich-text-editor .ql-container {
+  border: none;
+  font-family: inherit;
+  font-size: 0.875rem;
+}
+
+.rich-text-editor .ql-editor {
+  min-height: 200px;
+  color: var(--color-foreground);
+}
+
+.rich-text-editor .ql-editor.ql-blank::before {
+  color: var(--color-muted-foreground);
+  font-style: normal;
+}
+
+/* Dark mode support for Quill */
+[data-theme="dark"] .rich-text-editor .ql-stroke {
+  stroke: var(--color-foreground);
+}
+
+[data-theme="dark"] .rich-text-editor .ql-fill {
+  fill: var(--color-foreground);
+}
+
+[data-theme="dark"] .rich-text-editor .ql-picker-label {
+  color: var(--color-foreground);
+}
+
+[data-theme="dark"] .rich-text-editor .ql-picker-options {
+  background: var(--color-popover);
+  border: 1px solid var(--color-border);
+}
+
+/* Image resize handles */
+.rich-text-editor img {
+  cursor: pointer;
+}
+
+.rich-text-editor .quill-image-resizer {
+  position: absolute;
+  border: 1px dashed hsl(var(--primary));
+}
+
+.rich-text-editor .quill-image-resizer-handle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: hsl(var(--primary));
+  border: 1px solid hsl(var(--background));
+  border-radius: 50%;
+}
+
+.rich-text-editor .quill-image-resizer-handle.ne,
+.rich-text-editor .quill-image-resizer-handle.nw,
+.rich-text-editor .quill-image-resizer-handle.se,
+.rich-text-editor .quill-image-resizer-handle.sw {
+  cursor: nwse-resize;
+}
+
+.rich-text-editor .quill-image-resizer-display {
+  position: absolute;
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  padding: 2px 4px;
+  font-size: 12px;
+  border-radius: 4px;
+  pointer-events: none;
+}
