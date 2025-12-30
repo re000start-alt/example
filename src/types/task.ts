@@ -1,6 +1,5 @@
 export type TaskStatus = "todo" | "inprogress" | "completed" | "cancelled";
 export type TaskPriority = "low" | "medium" | "high";
-export type ViewMode = "list" | "project" | "calendar";
 
 export interface Attachment {
   id: string;

@@ -1,93 +1,219 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { Task, Project } from "@/types/task";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { Session } from "@supabase/supabase-js";
+import { supabase } from "../integrations/supabase/client";
+import { Project, Task } from "../types/task";
+import { showToast } from "../utils/toast";
 
-interface TaskContextType {
+interface TaskContextValue {
   tasks: Task[];
   projects: Project[];
-  addTask: (task: Omit<Task, "id" | "createdAt" | "updatedAt">) => void;
-  updateTask: (id: string, updates: Partial<Task>) => void;
-  deleteTask: (id: string) => void;
-  addProject: (name: string, color: string) => void;
-  deleteProject: (id: string) => void;
+  session: Session | null;
+  loading: boolean;
+  addTask: (task: Omit<Task, "id" | "createdAt" | "updatedAt">) => Promise<void>;
+  updateTask: (id: string, updates: Partial<Task>) => Promise<void>;
+  deleteTask: (id: string) => Promise<void>;
+  refreshData: () => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
-const TaskContext = createContext<TaskContextType | undefined>(undefined);
+const TaskContext = createContext<TaskContextValue | undefined>(undefined);
 
 export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [tasks, setTasks] = useState<Task[]>(() => {
-    const saved = localStorage.getItem("tasks");
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  const [projects, setProjects] = useState<Project[]>(() => {
-    const saved = localStorage.getItem("projects");
-    return saved
-      ? JSON.parse(saved)
-      : [
-          { id: "work", name: "Work", color: "#4A90FF", taskCount: 0 },
-          { id: "personal", name: "Personal", color: "#FF6B6B", taskCount: 0 },
-        ];
-  });
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-    // Update project task counts
-    const updatedProjects = projects.map((project) => ({
-      ...project,
-      taskCount: tasks.filter((task) => task.project === project.id).length,
-    }));
-    setProjects(updatedProjects);
-    localStorage.setItem("projects", JSON.stringify(updatedProjects));
-  }, [tasks]);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session) {
+        refreshData();
+      } else {
+        setLoading(false);
+      }
+    });
 
-  const addTask = (task: Omit<Task, "id" | "createdAt" | "updatedAt">) => {
-    const newTask: Task = {
-      ...task,
-      id: Date.now().toString(),
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) {
+        refreshData();
+      } else {
+        setTasks([]);
+        setProjects([]);
+        setLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const refreshData = async () => {
+    setLoading(true);
+    try {
+      const { data: tasksData, error: tasksError } = await supabase
+        .from("tasks")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (tasksError) throw tasksError;
+
+      const { data: projectsData, error: projectsError } = await supabase
+        .from("projects")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (projectsError) throw projectsError;
+
+      const mappedTasks: Task[] = (tasksData || []).map((task) => ({
+        id: task.id,
+        title: task.title,
+        description: task.description || "",
+        status: task.status,
+        priority: task.priority,
+        project: task.project_id || "",
+        dueDate: task.due_date ?? undefined,
+        reminder: task.reminder ?? undefined,
+        createdAt: task.created_at,
+        updatedAt: task.updated_at,
+      }));
+
+      const mappedProjects: Project[] = (projectsData || []).map((project) => ({
+        id: project.id,
+        name: project.name,
+        color: project.color,
+        taskCount: project.task_count || 0,
+      }));
+
+      setTasks(mappedTasks);
+      setProjects(mappedProjects);
+    } catch (error: any) {
+      showToast(error.message || "Failed to load data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addTask: TaskContextValue["addTask"] = async (task) => {
+    const tempId = `temp-${Date.now()}`;
+    const optimisticTask: Task = {
+      id: tempId,
+      title: task.title,
+      description: task.description || "",
+      status: task.status,
+      priority: task.priority,
+      project: task.project,
+      dueDate: task.dueDate,
+      reminder: task.reminder,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    setTasks([...tasks, newTask]);
+
+    setTasks((prev) => [optimisticTask, ...prev]);
+
+    try {
+      const { data, error } = await supabase
+        .from("tasks")
+        .insert([
+          {
+            user_id: session?.user?.id,
+            title: task.title,
+            description: task.description,
+            status: task.status,
+            priority: task.priority,
+            project_id: task.project || null,
+            due_date: task.dueDate ?? null,
+            reminder: task.reminder ?? null,
+          },
+        ])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      const mappedTask: Task = {
+        id: data.id,
+        title: data.title,
+        description: data.description || "",
+        status: data.status,
+        priority: data.priority,
+        project: data.project_id || "",
+        dueDate: data.due_date ?? undefined,
+        reminder: data.reminder ?? undefined,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+      };
+
+      setTasks((prev) => prev.map((item) => (item.id === tempId ? mappedTask : item)));
+      showToast("Task created");
+    } catch (error: any) {
+      setTasks((prev) => prev.filter((item) => item.id !== tempId));
+      showToast(error.message || "Failed to create task");
+    }
   };
 
-  const updateTask = (id: string, updates: Partial<Task>) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, ...updates, updatedAt: new Date().toISOString() } : task
-      )
-    );
+  const updateTask: TaskContextValue["updateTask"] = async (id, updates) => {
+    const previous = [...tasks];
+    setTasks((prev) => prev.map((task) => (task.id === id ? { ...task, ...updates } : task)));
+
+    try {
+      const { error } = await supabase
+        .from("tasks")
+        .update({
+          title: updates.title,
+          description: updates.description,
+          status: updates.status,
+          priority: updates.priority,
+          project_id: updates.project || null,
+          due_date: updates.dueDate ?? null,
+          reminder: updates.reminder ?? null,
+        })
+        .eq("id", id);
+
+      if (error) throw error;
+      showToast("Task updated");
+    } catch (error: any) {
+      setTasks(previous);
+      showToast(error.message || "Failed to update task");
+    }
   };
 
-  const deleteTask = (id: string) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+  const deleteTask: TaskContextValue["deleteTask"] = async (id) => {
+    const previous = [...tasks];
+    setTasks((prev) => prev.filter((task) => task.id !== id));
+
+    try {
+      const { error } = await supabase.from("tasks").delete().eq("id", id);
+      if (error) throw error;
+      showToast("Task deleted");
+    } catch (error: any) {
+      setTasks(previous);
+      showToast(error.message || "Failed to delete task");
+    }
   };
 
-  const addProject = (name: string, color: string) => {
-    const newProject: Project = {
-      id: Date.now().toString(),
-      name,
-      color,
-      taskCount: 0,
-    };
-    setProjects([...projects, newProject]);
+  const signOut = async () => {
+    await supabase.auth.signOut();
   };
 
-  const deleteProject = (id: string) => {
-    if (id === "work" || id === "personal") return; // Prevent deleting default projects
-    setProjects(projects.filter((project) => project.id !== id));
-    // Move tasks to Personal project
-    setTasks(
-      tasks.map((task) => (task.project === id ? { ...task, project: "personal" } : task))
-    );
-  };
-
-  return (
-    <TaskContext.Provider
-      value={{ tasks, projects, addTask, updateTask, deleteTask, addProject, deleteProject }}
-    >
-      {children}
-    </TaskContext.Provider>
+  const value = useMemo(
+    () => ({
+      tasks,
+      projects,
+      session,
+      loading,
+      addTask,
+      updateTask,
+      deleteTask,
+      refreshData,
+      signOut,
+    }),
+    [tasks, projects, session, loading]
   );
+
+  return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;
 };
 
 export const useTasks = () => {
